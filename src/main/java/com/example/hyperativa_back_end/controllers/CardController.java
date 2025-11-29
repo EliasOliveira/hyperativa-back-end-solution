@@ -2,6 +2,7 @@ package com.example.hyperativa_back_end.controllers;
 
 import com.example.hyperativa_back_end.dtos.CardRequest;
 import com.example.hyperativa_back_end.dtos.CardResponse;
+import com.example.hyperativa_back_end.dtos.CardUploadRequest;
 import com.example.hyperativa_back_end.services.CardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +14,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/cards")
@@ -41,21 +41,21 @@ public class CardController {
     }
 
     @Operation(
-            summary = "Insert multiple cards via TXT file",
-            description = "Registers multiple card numbers from a TXT file. Each line must contain one card number.",
+            summary = "Insert multiple cards via Base64 file",
+            description = "Registers multiple card numbers from a Base64-encoded TXT file. Each line must contain one card number.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Cards successfully registered"),
                     @ApiResponse(responseCode = "400", description = "Invalid file format or content")
             }
     )
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadCardsFile(
-            @Parameter(description = "TXT file containing card numbers, one per line")
-            @RequestParam("file") MultipartFile file
+    public ResponseEntity<String> uploadCardsBase64(
+            @Valid @RequestBody CardUploadRequest request
     ) {
-        cardService.saveCardsFromFile(file);
+        cardService.saveCardsFromBase64(request.getFileBase64());
         return ResponseEntity.ok("Cards uploaded successfully");
     }
+
 
     @Operation(
             summary = "Check if a card exists",

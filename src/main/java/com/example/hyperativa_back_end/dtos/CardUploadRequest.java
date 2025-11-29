@@ -6,13 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@Schema(description = "Request containing card information")
+@Schema(description = "Request to insert cards")
 @AllArgsConstructor
-public class CardRequest {
+public class CardUploadRequest {
 
+    @Schema(description = "Base64-encoded content of the TXT file")
     @NotBlank
-    @Schema(description = "Full card number")
-    private String cardNumber;
+    private String fileBase64;
 
 }
-

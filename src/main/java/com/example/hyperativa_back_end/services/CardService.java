@@ -2,6 +2,7 @@ package com.example.hyperativa_back_end.services;
 
 import com.example.hyperativa_back_end.dtos.CardRequest;
 import com.example.hyperativa_back_end.dtos.CardResponse;
+import com.example.hyperativa_back_end.dtos.beanio.CardRecord;
 import com.example.hyperativa_back_end.entities.Card;
 import com.example.hyperativa_back_end.exceptions.CardAlreadyExistsException;
 import com.example.hyperativa_back_end.exceptions.CardNotFoundException;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CardService {
 
+    private final PositionalFileService positionalFileService;
     private final CardRepository cardRepository;
 
     public CardResponse saveCard(@Valid CardRequest request) {
@@ -35,38 +38,25 @@ public class CardService {
             throw new CardAlreadyExistsException("Card already exists");
         }
 
-        Card card = new Card();
-        card.setNumber(request.getCardNumber());
+        Card card = new Card(request.getCardNumber());
         cardRepository.save(card);
 
         return new CardResponse(card.getId(), card.getNumber());
     }
 
-    public void saveCardsFromFile(MultipartFile file) {
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!line.trim().isEmpty()) {
-                    CardRequest request = new CardRequest();
-                    request.setCardNumber(line.trim());
-                    saveCard(request);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error processing file", e);
-        }
+    public void saveCardsFromBase64(String base64Content) {
+        log.info("Saving cards");
+        List<CardRecord> records = positionalFileService.parseCards(base64Content);
+        records.stream()
+                .map(record -> new CardRequest(record.getCardNumber()))
+                .forEach(this::saveCard);
     }
 
     public CardResponse findCard(String cardNumber) {
         log.info("Searching card: {}", cardNumber);
-
-        for (Card card : cardRepository.findAll()) {
-            return new CardResponse(card.getId(), card.getNumber());
-        }
-
-        throw new CardNotFoundException("Card not found");
+        return cardRepository.findByNumber(cardNumber)
+                .map(card -> new CardResponse(card.getId(), card.getNumber()))
+                .orElseThrow(() -> new CardNotFoundException("Card not found"));
     }
 
 }

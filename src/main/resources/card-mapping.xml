@@ -1,0 +1,21 @@
+<stream name="cardStream" format="fixedlength" strict="false" padding=" ">
+
+    <record name="header" class="com.example.hyperativa_back_end.beanio.HeaderRecord">
+        <field name="name" length="29" />
+        <field name="date" length="8" />
+        <field name="batch" length="8" />
+        <field name="recordCount" length="6" />
+    </record>
+
+    <record name="card" class="com.example.hyperativa_back_end.beanio.CardRecord">
+        <field name="identifier" length="2" />
+        <field name="lotNumber" length="5" />
+        <field name="cardNumber" length="19" />
+    </record>
+
+    <record name="footer" class="com.example.hyperativa_back_end.beanio.FooterRecord">
+        <field name="batch" length="8" />
+        <field name="recordCount" length="6" />
+    </record>
+
+</stream>

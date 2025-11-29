@@ -13,6 +13,10 @@ import java.util.UUID;
 @Table(name = "cards")
 public class Card {
 
+    public Card(String number) {
+        this.number = number;
+    }
+
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id = UUID.randomUUID();
