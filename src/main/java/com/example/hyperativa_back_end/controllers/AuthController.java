@@ -1,14 +1,14 @@
 package com.example.hyperativa_back_end.controllers;
 
 import com.example.hyperativa_back_end.dtos.AuthRequest;
+import com.example.hyperativa_back_end.services.UserService;
 import io.jsonwebtoken.Jwts;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Key;
 import java.util.Date;
@@ -16,24 +16,23 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "Endpoints for user authentication")
 public class AuthController {
 
-    // Hardcoded credentials
-    private static final String DEFAULT_USERNAME = "admin";
-    private static final String DEFAULT_PASSWORD = "admin123";
-
     private final Key key;
+    private final UserService userService;
 
     @PostMapping("/login")
+    @Operation(summary = "User login", description = "Authenticates the user and returns a valid JWT token")
     public ResponseEntity<String> login(@RequestBody AuthRequest request) {
-//        TODO use an service to validate credentials
-        if (DEFAULT_USERNAME.equals(request.getUsername()) && DEFAULT_PASSWORD.equals(request.getPassword())) {
+        boolean authenticated = userService.authenticate(request.getUsername(), request.getPassword());
+
+        if (authenticated) {
             String token = generateToken(request.getUsername());
             return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
-
     }
 
     private String generateToken(String username) {
@@ -47,5 +46,4 @@ public class AuthController {
                 .signWith(key)
                 .compact();
     }
-
 }
