@@ -29,25 +29,17 @@ public class CardService {
     public CardResponse saveCard(@Valid CardRequest request) {
         log.info("Saving card: {}", request);
 
-        // Hash the card number securely
-        String salt = UUID.randomUUID().toString();
-        String panHash = hashCardNumber(request.getCardNumber(), salt);
-
         // Avoid duplicates
-        if (cardRepository.existsByPanHash(panHash)) {
+        if (cardRepository.existsByNumber(request.getCardNumber())) {
             log.info("Card already exists");
             throw new CardAlreadyExistsException("Card already exists");
         }
 
         Card card = new Card();
-        card.setPanHash(panHash);
-        card.setSalt(salt);
-        card.setLast4(getLast4(request.getCardNumber()));
-        card.setToken(UUID.randomUUID().toString());
-
+        card.setNumber(request.getCardNumber());
         cardRepository.save(card);
 
-        return new CardResponse(card.getId(), card.getLast4());
+        return new CardResponse(card.getId(), card.getNumber());
     }
 
     public void saveCardsFromFile(MultipartFile file) {
@@ -71,13 +63,10 @@ public class CardService {
         log.info("Searching card: {}", cardNumber);
 
         for (Card card : cardRepository.findAll()) {
-            return new CardResponse(card.getId(), card.getLast4());
+            return new CardResponse(card.getId(), card.getNumber());
         }
 
         throw new CardNotFoundException("Card not found");
     }
 
-    private String getLast4(String cardNumber) {
-        return cardNumber.length() > 4 ? cardNumber.substring(cardNumber.length() - 4) : cardNumber;
-    }
 }
