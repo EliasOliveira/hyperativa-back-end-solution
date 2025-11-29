@@ -2,6 +2,7 @@ package com.example.hyperativa_back_end.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "cards")
+@NoArgsConstructor
 public class Card {
 
     public Card(String number) {
@@ -21,7 +23,7 @@ public class Card {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id = UUID.randomUUID();
 
-    @Column(name = "number", nullable = false, length = 4)
+    @Column(name = "number", nullable = false, length = 16)
     private String number;
 
     @Column(name = "created_at", nullable = false)
