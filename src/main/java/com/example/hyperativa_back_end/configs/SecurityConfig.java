@@ -2,7 +2,6 @@ package com.example.hyperativa_back_end.configs;
 
 import com.example.hyperativa_back_end.security.JwtAuthenticationFilter;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
