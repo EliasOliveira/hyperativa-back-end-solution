@@ -8,16 +8,19 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.List;
 
-import static com.example.hyperativa_back_end.utils.Constants.SECRET_KEY;
-
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final Key key;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -29,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             try {
                 Jws<Claims> claims = Jwts.parserBuilder()
-                        .setSigningKey(SECRET_KEY)
+                        .setSigningKey(key)
                         .build()
                         .parseClaimsJws(token);
 
