@@ -28,6 +28,7 @@ public class PositionalFileService {
         BeanReader beanReader = factory.createReader("cardStream", reader);
 
         // Read records
+//        TODO finish
         Object record;
         List<CardRecord> cards = new ArrayList<>();
         while ((record = beanReader.read()) != null) {
