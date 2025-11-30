@@ -49,7 +49,13 @@ public class CardService {
         List<CardRecord> records = positionalFileService.parseCards(base64Content);
         records.stream()
                 .map(record -> new CardRequest(record.getCardNumber()))
-                .forEach(this::saveCard);
+                .forEach(card -> {
+                    try {
+                        this.saveCard(card);
+                    } catch (CardAlreadyExistsException e) {
+                        log.info("Card already exists: {}", card.getCardNumber());
+                    }
+                });
     }
 
     public CardResponse findCard(String cardNumber) {

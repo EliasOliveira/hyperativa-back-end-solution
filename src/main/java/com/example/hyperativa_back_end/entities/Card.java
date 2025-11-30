@@ -23,7 +23,7 @@ public class Card {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id = UUID.randomUUID();
 
-    @Column(name = "number", nullable = false, length = 16)
+    @Column(name = "number", nullable = false, length = 26)
     private String number;
 
     @Column(name = "created_at", nullable = false)
