@@ -35,7 +35,7 @@ public class ApiLoggingAspect {
         String method = request.getMethod();
         String uri = request.getRequestURI();
 
-        log.info("➡️ Incoming request: {} {}", method, uri);
+        log.info("Incoming request: {} {}", method, uri);
 
         if (log.isDebugEnabled()) {
             try {
@@ -49,7 +49,7 @@ public class ApiLoggingAspect {
         Object result = joinPoint.proceed();
 
         if (response != null) {
-            log.info("⬅️ Response status: {}", response.getStatus());
+            log.info("Response status: {}", response.getStatus());
         }
 
         if (log.isDebugEnabled()) {
