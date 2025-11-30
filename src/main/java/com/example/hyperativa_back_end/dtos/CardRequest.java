@@ -5,10 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Schema(description = "Request containing card information")
 @AllArgsConstructor
+@NoArgsConstructor
 public class CardRequest {
 
     @NotBlank
