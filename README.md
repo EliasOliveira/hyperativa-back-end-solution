@@ -18,7 +18,7 @@ This is a Spring Boot REST API developed for the Hyperativa challenge. It provid
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/EliasOliveira/hyperativa-back-end-solution.git
+git clone https://github.com/EliasOliveira/hyperativa-back-end-solution.git &&
 cd hyperativa-back-end-solution
 ```
 
